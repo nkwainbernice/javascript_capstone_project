@@ -26,7 +26,7 @@ const displayMovie = (movies) => {
     movieTitle.textContent = movie.name;
 
     const movieImage = document.createElement('img');
-    movieImage.src = movie.image ? movie.image.medium : '';
+    movieImage.src = movie.image ? movie.image.medium : 'default-image-url.jpg';
     
     const movieType = document.createElement('p');
     movieType.textContent = `Type: ${movie.type}`;
@@ -34,11 +34,18 @@ const displayMovie = (movies) => {
     const movieLanguage = document.createElement('p');
     movieLanguage.textContent = `Language: ${movie.language}`;
 
+    const movieGenres = document.createElement('p');
+    movieGenres.textContent = `Genres: ${movie.genres.join(', ')}`;
+
+    const movieDescription = document.createElement('p');
+    movieDescription.innerHTML = `Description : ${movie.summary}`;  
+
     movieElement.appendChild(movieTitle);
     movieElement.appendChild(movieImage);
     movieElement.appendChild(movieType);
     movieElement.appendChild(movieLanguage);
-
+    movieElement.appendChild(movieGenres)
+     movieElement.appendChild(movieDescription)
     movieContainer.appendChild(movieElement);
   });
 };
