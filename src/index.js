@@ -1,6 +1,4 @@
 import './style.css';
-
-
 const fetchMovies = async () => {
   try {
     const response = await fetch('https://api.tvmaze.com/shows');
@@ -90,9 +88,10 @@ const displayMovies = (movies) => {
     // Like button event listener
     likeButton.addEventListener('click', async (e) => {
       e.stopPropagation(); // Prevent event propagation
-      await addLike(movie.id);
+      await toggleLike(movie.id);
       const likes = await getLikes(movie.id);
       likeCounter.textContent = likes; // Update the likes count
+
     });
   });
 };
@@ -113,18 +112,26 @@ document.getElementById('movies').addEventListener('click', async (e) => {
   }
 });
 
+let currentLikes = 0; // Keep track of the current likes count
+let isLiked = false; // Track whether the movie is currently liked
+
 // Get likes for the movie
 async function getLikes(movieId) {
   try {
     const res = await fetch(`https://003-js-capstone-api.vercel.app/likes/${movieId}`);
     const data = await res.json();
-    console.log(data); // Inspect this output
     
-    // Assuming data is an object and not an array
-    if (data && data.item_id === movieId.toString()) {
-      return data.likes;
+    if (data && typeof data.count === 'number') {
+      currentLikes = data.count; // Initialize current likes
+      return currentLikes;
     }
-    return 0; // Return 0 if no likes found for this movie
+    
+    if (Array.isArray(data)) {
+      const LikeEntry = data.find((item) => item.item_id === movieId.toString());
+      currentLikes = LikeEntry ? LikeEntry.likes : 0;
+      return currentLikes;
+    }
+    return 0;
   } catch (error) {
     console.error("Error fetching likes:", error);
     return 0;
@@ -132,7 +139,7 @@ async function getLikes(movieId) {
 }
 
 // Send likes to the API
-async function addLike(movieId) {
+async function toggleLike(movieId) {
     const userId = getUserId(); // Retrieve the user ID
 
     if (!userId) {
@@ -141,38 +148,51 @@ async function addLike(movieId) {
     }
 
     try {
-        const likeUrl = `https://003-js-capstone-api.vercel.app/likes/`; 
-        const bodyData = {
-            user_id: userId,
-            item_id: movieId
-        };
+        const likeUrl = `https://003-js-capstone-api.vercel.app/likes/`;
 
-        console.log("Payload data:", JSON.stringify(bodyData)); 
-
-        const response = await fetch(likeUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(bodyData)
-        });
-
-        if (!response.ok) {
-            const errorMessage = await response.text(); // Get error text from response
-            throw new Error(`HTTP error! status: ${response.status} - ${errorMessage}`);
-        }
-
-        const result = await response.json();
-        if (result.success) {
-            console.log("Like added successfully:", result);
+        if (isLiked) {
+            // Unlike logic
+            // Implement API call to remove like, if your API supports it
+            console.log("Unliking movie:", movieId);
+            currentLikes--; // Decrease like count
+            isLiked = false;
         } else {
-            console.error("Failed to add like:", result);
+            // Like logic
+            const bodyData = {
+                movieId: movieId.toString(),
+                userId: userId
+            };
+
+            const response = await fetch(likeUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(bodyData)
+            });
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw new Error(`HTTP error! status: ${response.status} - ${errorMessage}`);
+            }
+
+            currentLikes++; // Increase like count
+            isLiked = true;
         }
 
-        return result;
+        console.log("Current likes:", currentLikes);
+        updateLikeDisplay(currentLikes); // Update the UI with the new likes count
+
     } catch (error) {
-        console.error("Error adding like:", error);
+        console.error("Error toggling like:", error);
     }
+}
+
+// Function to update the like display on your webpage
+function updateLikeDisplay(count) {
+    // Update the element showing the like count
+    const likeCountElement = document.getElementById('like-count');
+    likeCountElement.innerText = `Likes: ${count}`;
 }
 
 
