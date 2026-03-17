@@ -1,9 +1,12 @@
 import { getComments, addComment } from './commentApi.js';
 import getUserId from './userId.js';
 
-let popupOpen = false; // Declare the variable at the start
 const showPopup = async (movie) => {
   const popup = document.getElementById('popup');
+  if (popup.style.display === 'flex') return; // Prevent multiple popups
+
+  popup.style.display = 'flex'; // Set immediately to prevent multiple calls
+
   const popupBody = document.getElementById('popup-body');
   popupBody.innerHTML = '';
 
@@ -43,18 +46,11 @@ const showPopup = async (movie) => {
   submitBtn.textContent = 'Comment';
 
   // FETCH COMMENTS
-
-  const appId = 'https://003-js-capstone-api.vercel.app';
-
-  const getComments = async (movieId) => {
+  const loadComments = async () => {
     try {
-      const res = await fetch(`${appId}/comments/${movieId}`);
-      const data = await res.json();
+      const commentsArray = await getComments(movie.id);
 
       commentList.innerHTML = '';
-
-      // Handle API response structure: {success: true, comments: Array}
-      const commentsArray = data.comments || (Array.isArray(data) ? data : []);
 
       if (!Array.isArray(commentsArray) || commentsArray.length === 0) {
         commentTitle.textContent = 'Comments (0)';
@@ -81,7 +77,7 @@ const showPopup = async (movie) => {
     }
   };
 
-  await getComments(movie.id);
+  await loadComments();
   submitBtn.addEventListener('click', async () => {
     const username = nameInput.value.trim();
     const commentText = commentInput.value.trim();
@@ -94,33 +90,9 @@ const showPopup = async (movie) => {
       return;
     }
 
-    const commentData = {
-      movieId: movie.id.toString(), // Convert to string if the API expects it
-      userName: username,
-      comment: commentText,
-      userId,
-    };
+    const success = await addComment(movie.id, username, commentText, userId);
 
-    // Submitting comment data for movieId:
-    try {
-      const response = await fetch(`${appId}/comments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(commentData),
-      });
-
-      if (!response.ok) {
-        let errorMsg = `Failed to post comment: ${response.status}`;
-        if (response.status === 500) {
-          errorMsg += ' - Server error. Please try again later.';
-        } else if (response.status >= 400 && response.status < 500) {
-          errorMsg += ' - Request error. Check your input.';
-        }
-        throw new Error(errorMsg);
-      }
-
+    if (success) {
       // Clear input fields after success
       nameInput.value = '';
       commentInput.value = '';
@@ -128,12 +100,14 @@ const showPopup = async (movie) => {
       commentList.textContent = 'Comment submitted successfully!';
 
       // Add a small delay to ensure backend processes the comment
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 500);
+      });
 
       // Fetch and update comments after successful submission
-      await getComments(movie.id);
-    } catch (error) {
-      commentList.textContent = `Error submitting comment: ${error.message || 'unknown error'}`;
+      await loadComments();
+    } else {
+      commentList.textContent = 'Error submitting comment.';
     }
   });
 
@@ -143,7 +117,6 @@ const showPopup = async (movie) => {
   closeBtn.addEventListener('click', () => {
     popup.style.display = 'none';
     popupBody.innerHTML = '';
-    popupOpen = false; // allow popup again
   });
 
   popupBody.appendChild(image);
@@ -158,8 +131,6 @@ const showPopup = async (movie) => {
   popupBody.appendChild(commentInput);
   popupBody.appendChild(submitBtn);
   popupBody.appendChild(closeBtn);
-
-  popup.style.display = 'flex';
 };
 
 export default showPopup;
