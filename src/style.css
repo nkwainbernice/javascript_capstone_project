@@ -44,7 +44,7 @@
 .movie-card:hover img {
   transform: scale(1.1);
 }
- .button-container {
+ .button-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -52,14 +52,14 @@
 }
 
 /* Movie title */
-.button-container h3 {
+.button-row h3 {
   font-size: 1rem;
   margin: 0;
   flex: 1;
 }
 
 /* Like button */
-.like-button {
+.like-button{
   color: #ff4b5c;
   font-size: 1.2rem;
   cursor: pointer;
