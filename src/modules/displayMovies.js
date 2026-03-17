@@ -70,6 +70,5 @@ function displayMovies(movies, showPopup) {
     movieElement.appendChild(commentButton);
     movieContainer.appendChild(movieElement);
   });
-  
 }
-export { displayMovies };
+export default displayMovies;

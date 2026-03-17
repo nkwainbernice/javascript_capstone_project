@@ -20,7 +20,7 @@ const getStoredLiked = () => {
 
 const setStoredLiked = (liked) => {
   localStorage.setItem('movieLiked', JSON.stringify(liked));
-}
+};
 
 const storedLikes = getStoredLikes();
 const storedLiked = getStoredLiked();

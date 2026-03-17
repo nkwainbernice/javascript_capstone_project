@@ -1,9 +1,9 @@
 import './style.css';
-import { displayMovies } from './modules/displayMovies.js';
+import createNavbar from './modules/nav.js'; // Default import
+import addCopyright from './modules/copyright.js'; // Default import
+import displayMovies from './modules/displayMovies.js'; // Default import
+import showPopup from './modules/popup.js'; // Default import
 import { fetchMovies } from './modules/movieApi.js';
-import { createNavbar } from './modules/nav.js';
-import { addCopyright } from './modules/copyright.js';
-import { showPopup } from './modules/popup.js';
 
 // Initialize navbar
 createNavbar();
@@ -15,4 +15,3 @@ addCopyright();
 document.addEventListener('DOMContentLoaded', async () => {
   await fetchMovies(displayMovies, showPopup);
 });
-

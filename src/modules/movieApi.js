@@ -22,18 +22,20 @@ const fetchLikes = async (movieId) => {
   return res.json();
 };
 async function getLikes(movieId) {
-      try {
-        const res = await fetch(`https://003-js-capstone-api.vercel.app/likes/${movieId}`);
-        const data = await res.json();
+  try {
+    const res = await fetch(`https://003-js-capstone-api.vercel.app/likes/${movieId}`);
+    const data = await res.json();
 
-        if (data && typeof data.count === 'number') {
-          return Math.max(0, data.count); // Ensure non-negative likes
-        }
-        return 0; // Default to 0 if no data found
-      } catch (error) {
-        // Error fetching likes; default to 0
-        return 0;
-      }
+    if (data && typeof data.count === 'number') {
+      return Math.max(0, data.count); // Ensure non-negative likes
     }
+    return 0; // Default to 0 if no data found
+  } catch (error) {
+    // Error fetching likes; default to 0
+    return 0;
+  }
+}
 
-export { fetchMovies, fetchMovieDetails, fetchLikes,getLikes };
+export {
+  fetchMovies, fetchMovieDetails, fetchLikes, getLikes,
+};

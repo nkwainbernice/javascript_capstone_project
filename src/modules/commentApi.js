@@ -7,10 +7,10 @@ const getComments = async (movieId) => {
   try {
     const res = await fetch(`${appId}/comments/${movieId}`);
     const data = await res.json();
-    
+
     return data.comments || []; // Return comments or an empty array if not found
   } catch (error) {
-    console.error('Error fetching comments:', error);
+    // Error fetching comments; return empty list
     return []; // Return an empty array in case of error
   }
 };
@@ -39,7 +39,7 @@ const addComment = async (movieId, username, comment, userId) => {
 
     return true; // Successfully added comment
   } catch (error) {
-    console.error('Error submitting comment:', error);
+    // Error submitting comment; return false to indicate failure
     return false; // Return false in case of error
   }
 };

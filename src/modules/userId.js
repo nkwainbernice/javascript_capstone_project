@@ -11,5 +11,4 @@ const getUserId = () => {
   return userId;
 };
 
-
-export { getUserId };
+export default getUserId;

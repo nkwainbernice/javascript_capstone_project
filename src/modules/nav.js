@@ -1,4 +1,3 @@
-
 // Function to create navbar
 const createNavbar = () => {
   const { body } = document;
@@ -58,4 +57,4 @@ const createNavbar = () => {
   body.prepend(navbar);
 };
 
-export { createNavbar };
+export default createNavbar;

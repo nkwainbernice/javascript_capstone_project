@@ -1,11 +1,8 @@
 import { getComments, addComment } from './commentApi.js';
-import { getUserId } from './userId.js';
+import getUserId from './userId.js';
 
-let popupOpen = false;
-
+let popupOpen = false; // Declare the variable at the start
 const showPopup = async (movie) => {
-  if (popupOpen) return; // Prevent multiple popups
-  popupOpen = true;
   const popup = document.getElementById('popup');
   const popupBody = document.getElementById('popup-body');
   popupBody.innerHTML = '';
@@ -146,7 +143,7 @@ const showPopup = async (movie) => {
   closeBtn.addEventListener('click', () => {
     popup.style.display = 'none';
     popupBody.innerHTML = '';
-    popupOpen = false;
+    popupOpen = false; // allow popup again
   });
 
   popupBody.appendChild(image);
@@ -165,5 +162,4 @@ const showPopup = async (movie) => {
   popup.style.display = 'flex';
 };
 
-
-export { showPopup };
+export default showPopup;

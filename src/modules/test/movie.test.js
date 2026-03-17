@@ -1,7 +1,8 @@
-import { getUserId } from '../userId.js';
-import { getStoredLikes, setStoredLikes, getStoredLiked, setStoredLiked } from '../storage.js';
-import { toggleLike } from '../like.js';
-import { displayMovies } from '../displayMovies.js';
+
+import {
+  getStoredLikes, setStoredLikes, getStoredLiked, setStoredLiked,
+} from '../storage.js';
+
 
 describe('userId module', () => {
   it('returns the same userId when called repeatedly', () => {
@@ -39,8 +40,6 @@ describe('like module', () => {
   });
 });
 
-
-
 describe('displayMovies', () => {
   beforeEach(() => {
     document.body.innerHTML = `
@@ -53,10 +52,8 @@ describe('displayMovies', () => {
   test('should render movie cards', () => {
     const movies = [{ id: 1, name: 'Batman', image: { medium: 'batman.jpg' } }];
     displayMovies(movies, () => {});
-    
+
     const cards = document.querySelectorAll('.movie-card');
     expect(cards.length).toBe(1);
   });
-
- 
 });
